@@ -1,1 +1,101 @@
-<h1>Welcome to my Project!</h1>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>leaflet-geoserver-wfs</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #map-container {
+            width: 100%;
+            height: 100%;
+        }
+        .panel {
+            width: 500px;
+            z-index: 999;
+            position: absolute;
+            top: 80px;
+            left: 50px;
+            box-shadow: 0 0 6px 6px #ccc;
+            background-color: #fff;
+            padding: 20px;
+        }
+        .my-custom-label{
+            color: #666;
+            font-weight: bold;
+        }
+    </style>
+    <link rel="stylesheet" href="./libs/leaflet.css" />
+    <link rel="stylesheet" href="./libs/bootstrap.min.css" />
+    <script src="./libs/leaflet.js"></script>
+    <script src="./libs/jquery-2.1.4.min.js"></script>
+    <script src="./libs/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.bootcss.com/Turf.js/5.1.6/turf.min.js"></script>
+</head>
+
+<body>
+    <div id="map-container"></div>
+
+    <div class="panel">
+        <h3>Leeds Building POI Search and Location System</h3>
+        <br />
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">  
+            <a class="nav-item nav-link active" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Search Postcode</a>  
+            <a class="nav-item nav-link" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Search POI Name</a>  
+        </div>  
+        <div class="tab-content" id="nav-tabContent">  
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">  
+                <div class="mb-3">  
+                    <label for="postcode" class="form-label">Postcode</label>  
+                    <input type="text" class="form-control" id="postcode" >  
+                </div>  
+                <button id="postcode_btn" class="btn btn-primary">Search</button>
+                <br />
+                <p>By entering the post code, search for data items in the post code dataset that match the current input code, locate and highlight them, and click on this point to view specific information.</p>  
+            </div>  
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">  
+                <div class="mb-3">  
+                    <label for="poiname" class="form-label">POI Name</label>  
+                    <input type="text" class="form-control" id="poiname" >  
+                </div>  
+                <button id="poiname_btn" class="btn btn-primary">Search</button>
+                <br />
+                <p>By entering the alias of the building, filter and search for data with the primary name containing the search name from the Community with postcodes Apr_2020 with coordinates dataset, and highlight it. Click on this point to view specific information.</p>
+            </div>  
+        </div>  
+    </div>
+</body>
+<script>
+    // csv extend to convert csv file to json format
+    $.extend({
+        csv: function (url, f) {
+            $.get(url, function (record) {
+                record = record.split("\r\n");
+                var title = record[0].split(",");
+                record.shift();
+                var data = [];
+                for (var i = 0; i < record.length - 1; i++) {
+                    var t = record[i].split(",");
+                    for (var y = 0; y < t.length; y++) {
+                        if (!data[i]) data[i] = {};
+                        data[i][title[y]] = t[y];
+                    }
+                }
+                f.call(this, data);
+                data = null;
+            });
+        }
+    })
+</script>
+<script src="./map.js"></script>
+
+</html>
